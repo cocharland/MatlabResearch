@@ -6,29 +6,26 @@ truePos = 0.9;
 trueNeg = 0.95;
 x = particle.robotPose(1);
 y = particle.robotPose(2);
-theta = particle.robotPose(3);
 % for j = 1:particle.height
 %     for k = 1:particle.width
 if theta == 1
-    xObs = x +  particle.observationXVector;
-    yObs = y +  particle.observationYVector;
+    xObs = x +  mapIn.observationXVector;
+    yObs = y +  mapIn.observationYVector;
 elseif theta == 2
-    xObs = x + particle.observationYVector;
-    yObs = y + particle.observationXVector;
+    xObs = x + mapIn.observationYVector;
+    yObs = y + mapIn.observationXVector;
 elseif theta == 3
-    xObs = x + particle.observationXVector;
-    yObs = y - particle.observationYVector;
+    xObs = x + mapIn.observationXVector;
+    yObs = y - mapIn.observationYVector;
 else
-    xObs = x - particle.observationYVector;
-    yObs = y + particle.observationXVector;
+    xObs = x - mapIn.observationYVector;
+    yObs = y + mapIn.observationXVector;
 end
-for index = 1:length(xObs)
-        j = yObs(index);
-        k = xObs(index);
-        if ( j <= 0 || j > particle.height || k <= 0 || k > particle.width)
-            continue;
-        end
-        if (z_t(j,k) == -1 )
+for j = 1:length(yObs)
+    for k = 1:length(xObs)
+% for j = (y-2):y+2
+%     for k = (x-2):(x+2)
+        if z_t(j,k) == -1
             continue;
         end
         if z_t(j,k) == 1 && localMap(j,k) == 1
@@ -40,22 +37,15 @@ for index = 1:length(xObs)
         elseif z_t(j,k) == 1 && localMap(j,k) == 0
             correleationMap(j,k) = 1-trueNeg;
         end     
+    end
 end
-
 weight = 1;
 % for j = 1:particle.height
 %     for k = 1:particle.width
-for j = 1:length(xObs)
-    row = yObs(j);
-    col = xObs(j);
-    if row <= 0 || row > particle.width
-        continue;
+for j = (y-2):y+2
+    for k = (x-2):(x+2)
+        weight = weight*correleationMap(j,k);
     end
-    if col <= 0 || col > particle.height
-        continue;
-    end
-    weight = weight*correleationMap(row,col);
-    
 end
 particleWeight = weight;
 

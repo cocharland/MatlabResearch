@@ -35,10 +35,10 @@ function [obsMap] = generateObservation(mapIn)
             end
             if mapIn.groundTruth(row,col) == 1
                 obsMap(row,col) = binornd(1,truePos);
-                %obsMap(row,col) = 1;
+                obsMap(row,col) = 1;
             else
-                obsMap(row,col) = binornd(1,1-trueNeg);
-                %obsMap(row,col) = 0;
+                %obsMap(row,col) = binornd(1,1-trueNeg);
+                obsMap(row,col) = 0;
             end
         %end
     end
