@@ -25,7 +25,7 @@ particleFiltObj.seenCells = ones(100,100);
 
 
 
-for t = 1:50
+for t = 1:5000
     poseHist = [poseHist; robotPose]; 
     if robotPose(1) > 100 || robotPose(2) > 100 || robotPose(1) <= 0 || robotPose(2) <= 0
         break

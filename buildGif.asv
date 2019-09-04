@@ -25,7 +25,7 @@ end
 drawnow
 figure(1)
 hold on
-plot(obj.robotPose(1),obj.robotPose(2),'r*')
+plot(obj.robotPose(1),obj.pose(2),'r*')
 drawnow
 % frame = getframe(h);
 % im = frame2im(frame);
