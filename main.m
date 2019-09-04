@@ -25,12 +25,14 @@ particleFiltObj.seenCells = ones(100,100);
 
 
 
-for t = 2:100
-    %mapObj = occupancyGridUpdate(robotPose,mapObj);
-    %robotPose = robotPoses(t,:);%moveRobot(mapObj,robotPose);
+for t = 1:50
     poseHist = [poseHist; robotPose]; 
     if robotPose(1) > 100 || robotPose(2) > 100 || robotPose(1) <= 0 || robotPose(2) <= 0
         break
+    end
+    u_t_tmp = [ 0 0 0];
+    if mod(t,15) == 0
+        particleFiltObj.robotPose(3) = randsample([1 2 3 4],1);
     end
     switch particleFiltObj.robotPose(3)
         case 1
@@ -42,10 +44,12 @@ for t = 2:100
         case 4
             u_t_tmp = [-1 0 0];
     end
-    tmp_pose = particleFiltObj.robotPose + u_t_tmp;
 
+    tmp_pose = particleFiltObj.robotPose + u_t_tmp;
     if (mapObj.groundTruth(tmp_pose(2),tmp_pose(1)) == 1)
         dir = randsample([-1 1],1);
+        
+            
         u_t_tmp = [0 0 dir];
         
         tmp_pose = particleFiltObj.robotPose + u_t_tmp;
@@ -61,7 +65,8 @@ for t = 2:100
 
     particleFiltObj = particle_filter(particleFiltObj,u_t_tmp,observation);
 
-    
+    lines = buildLines(20,particleFiltObj);
+    buildGif(lines, particleFiltObj,t);
     
 end
 
@@ -73,12 +78,9 @@ hold on
 plot(poseHist(:,1),poseHist(:,2),'g--')
 
 
-[H,T,R] = hough(particleFiltObj.physicalMap);
-P  = houghpeaks(H,20,'threshold',ceil(0.8*max(H(:))));
 
-lines = houghlines(particleFiltObj.physicalMap,T,R,P,'FillGap',10,'MinLength',5);
-hold on
 max_len = 0;
+
 for k = 1:length(lines)
    xy = [lines(k).point1; lines(k).point2];
    plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
@@ -94,5 +96,6 @@ for k = 1:length(lines)
       xy_long = xy;
    end
 end
+
 end
 

@@ -5,17 +5,18 @@ function [chi_t] = particle_filter(chi_t_minus_1, u_t, z_t)
     %Z_t is observation which should be a simple grid based around
     %robotpose + u_t
     numParticles = 1000;
-    localMapset = [];
+    localMapset = zeros(100,100,numParticles);
     chi_t_bar = [];
     chi_t = chi_t_minus_1;
     
     weight = zeros(1,numParticles);
 %     numParticles = length(chi_t_minus_1);
-    for j = 1:numParticles%length(chi_t_minus_1)
+currentParticle = chi_t_minus_1;
+%Assuming A deterministic Update of robot pose
+currentParticle.robotPose =  currentParticle.robotPose + u_t;
+    parfor j = 1:numParticles%length(chi_t_minus_1)
         %Sample for next time step
-        currentParticle = chi_t_minus_1;
-        %Assuming A deterministic Update of robot pose
-        currentParticle.robotPose =  currentParticle.robotPose + u_t;
+
         localMap = SampleFromMap(currentParticle);
         localMapSet(:,:,j) = localMap;
         %Observation step:

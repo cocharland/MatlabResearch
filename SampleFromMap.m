@@ -18,7 +18,7 @@ else
     xObs = x - MCObj.observationYVector;
     yObs = y + MCObj.observationXVector;
 end
-    
+
 
 for j = 1:length(xObs)
     row = yObs(j);
@@ -29,8 +29,6 @@ for j = 1:length(xObs)
     %Convert from log odds to normal probs:
     tmpOdds = 1-(1/(1+exp(MCObj.physicalMap(row,col))));
     localMapInstance(row,col) = binornd(1,tmpOdds);
-    
-
 end
 
 

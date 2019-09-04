@@ -25,7 +25,7 @@ particleFiltObj.seenCells = ones(100,100);
 
 
 
-for t = 2:400
+for t = 2:100
     %mapObj = occupancyGridUpdate(robotPose,mapObj);
     %robotPose = robotPoses(t,:);%moveRobot(mapObj,robotPose);
     poseHist = [poseHist; robotPose]; 
@@ -71,9 +71,27 @@ a = gca;
 a.YDir = 'normal';
 hold on
 plot(poseHist(:,1),poseHist(:,2),'g--')
-lines = houghlines(particleFiltObj.physicalMap);
-figure, imshow(rotI), hold on
+
+globalMap = particleFiltObj.physicalMap;
+for j = 1:particleFiltObj.height
+    for k = 1:particleFiltObj.height
+        if particleFiltObj.physicalMap(j,k) == 0
+           globalMap(j,k) =  -Inf;
+        end
+        
+    end
+end
+
+[H,T,R] = hough(globalMap);
+P  = houghpeaks(H,5,'threshold',ceil(0.5*max(H(:))));
+
+lines = houghlines(globalMap,T,R,P,'FillGap',15,'MinLength',2);
 max_len = 0;
+figure
+image(globalMap,'CDataMapping','scaled')
+a = gca;
+a.YDir = 'normal';
+hold on
 for k = 1:length(lines)
    xy = [lines(k).point1; lines(k).point2];
    plot(xy(:,1),xy(:,2),'LineWidth',2,'Color','green');
@@ -89,5 +107,15 @@ for k = 1:length(lines)
       xy_long = xy;
    end
 end
+
+figure
+localMap = zeros(100,100);
+for j = 1:particleFiltObj.height
+    for k = 1:particleFiltObj.height
+    tmpOdds = 1-(1/(1+exp(particleFiltObj.physicalMap(j,k))));
+    localMapInstance(j,k) = binornd(1,tmpOdds);
+    end
+ end
+image(edge(localMapInstance,'prewitt'),'c)
 end
 
