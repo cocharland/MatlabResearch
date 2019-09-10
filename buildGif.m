@@ -1,4 +1,5 @@
 function buildGif(lines,obj,n)
+close all
 h = figure(99);
 filename = 'drawingLines.gif';
 axis tight manual
@@ -23,17 +24,17 @@ for k = 1:length(lines)
 %    end
 end
 drawnow
-figure(1)
-hold on
-plot(obj.robotPose(1),obj.robotPose(2),'r*')
+% figure(1)
+% hold on
+% plot(obj.robotPose(1),obj.robotPose(2),'r*')
 drawnow
-% frame = getframe(h);
-% im = frame2im(frame);
-% [imind,cm] = rgb2ind(im,256);
-% if n == 1
-%     imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
-% else
-%     imwrite(imind,cm,filename,'gif','WriteMode','append');
-% end
+frame = getframe(h);
+im = frame2im(frame);
+[imind,cm] = rgb2ind(im,256);
+if n == 1
+    imwrite(imind,cm,filename,'gif', 'Loopcount',inf);
+else
+    imwrite(imind,cm,filename,'gif','WriteMode','append');
+end
 end
 

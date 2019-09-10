@@ -25,7 +25,7 @@ particleFiltObj.seenCells = ones(100,100);
 
 
 
-for t = 1:5000
+for t = 1:500
     poseHist = [poseHist; robotPose]; 
     if robotPose(1) > 100 || robotPose(2) > 100 || robotPose(1) <= 0 || robotPose(2) <= 0
         break
@@ -64,10 +64,11 @@ for t = 1:5000
     observation = generateObservation(particleFiltObj);
 
     particleFiltObj = particle_filter(particleFiltObj,u_t_tmp,observation);
-
-    lines = buildLines(20,particleFiltObj);
-    buildGif(lines, particleFiltObj,t);
-    
+    if mod(t,10) == 0
+        lines = buildLines(20,particleFiltObj);
+        buildGif(lines, particleFiltObj,t);
+        t/500
+    end
 end
 
 figure
