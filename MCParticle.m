@@ -2,6 +2,7 @@ classdef MCParticle
 
     properties
         physicalMap
+        houghDataMask
         groundTruth
         beliefMap
         width

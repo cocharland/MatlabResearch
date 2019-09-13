@@ -23,7 +23,7 @@ particleFiltObj.houghDataMask = zeros(100,100);
 
 
 
-for t = 1:2000
+for t = 1:1000
     poseHist = [poseHist; robotPose]; 
     if robotPose(1) > 100 || robotPose(2) > 100 || robotPose(1) <= 0 || robotPose(2) <= 0
         break
@@ -61,8 +61,8 @@ for t = 1:2000
     particleFiltObj = particle_filter(particleFiltObj,u_t_tmp,observation);
     if mod(t,20) == 0
         numlines = round(t/10);
-        if numlines > 10
-            numlines = 10;
+        if numlines > 20
+            numlines = 20;
         end
         particleFiltObj.physicalMap = particleFiltObj.physicalMap - particleFiltObj.houghDataMask;
         lines = buildLines(numlines,particleFiltObj);
@@ -74,6 +74,8 @@ for t = 1:2000
            lineTheta = lines(line).theta;
            lineRho = lines(line).rho;
            over = 0;
+           figure(69)
+           hold on
            for range = -25:.5:25 %find intersections
                u = (current_point-secondary_point)/norm(current_point-secondary_point);
                xy = current_point+range.*u;
@@ -84,11 +86,12 @@ for t = 1:2000
                    continue;
                end
                
-               particleFiltObj.houghDataMask(round(yy),round(xx)) =  particleFiltObj.houghDataMask(round(yy),round(xx))+0.25;
+               particleFiltObj.houghDataMask(round(yy),round(xx)) =  particleFiltObj.physicalMap(round(yy),round(xx))+4;
            end
  
         end
         particleFiltObj.physicalMap = particleFiltObj.physicalMap + particleFiltObj.houghDataMask;
+
     end
     t/1000
 end
