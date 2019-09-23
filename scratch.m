@@ -31,8 +31,8 @@ for line = 1:20
     xy1 = current_point-250.*u;
     xy2 = current_point+250.*u;
     %yy = (lineRho-xx*cosd(lineTheta))/sind(lineTheta);
-    xx = [xy1(1) xy2(1)]
-    yy = [xy1(2) xy2(2)]
+    xx = [xy1(1) xy2(1)];
+    yy = [xy1(2) xy2(2)];
     
     plot(xx,yy, 'r--')
     
@@ -40,3 +40,4 @@ for line = 1:20
 
     
 end
+

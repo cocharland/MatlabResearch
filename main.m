@@ -23,7 +23,7 @@ particleFiltObj.houghDataMask = zeros(100,100);
 
 
 
-for t = 1:2000
+for t = 1:1000
     poseHist = [poseHist; robotPose]; 
     if robotPose(1) > 100 || robotPose(2) > 100 || robotPose(1) <= 0 || robotPose(2) <= 0
         break
@@ -67,7 +67,8 @@ for t = 1:2000
         particleFiltObj.physicalMap = particleFiltObj.physicalMap - particleFiltObj.houghDataMask;
         lines = buildLines(numlines,particleFiltObj);
         buildGif(lines, particleFiltObj,t-19);
-        for line = 1:numlines
+        particleFiltObj.houghDataMask = zeros(100,100)-.2;
+        for line = 1:numlines %Time to wieght the map for walls
            %grab point+angle
            current_point = lines(line).point1;
            secondary_point = lines(line).point2;
