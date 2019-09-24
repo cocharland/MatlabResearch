@@ -1,0 +1,18 @@
+function [value] = simulate(state,h,d)
+%h = history
+%C = list of node children
+if d == 0
+    value = 0;
+    return
+end
+a = randsample([1 2 3 4 ],1);
+
+if length(C) <= k_0*N(ha)^alpha_0 %Probably need workshoping
+
+        [observation, reward, newState] = forwardSimulate(state,a);
+        
+    
+end
+
+end
+

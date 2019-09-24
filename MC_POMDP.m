@@ -1,4 +1,4 @@
-function [action] = MC_POMDP(particle)
+function [action] = MC_POMDP_DPW(particle)
 
 done = False;
 Q = [];
