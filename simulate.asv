@@ -1,16 +1,31 @@
-function [value] = simulate(state,h,d)
-%h = history
+function [value] = simulate(state,d,nodeTree, nodeNum)
+%h = history cell array in [b, {a} {o}] order
 %C = list of node children
+% B = The list of states associated with a node
+currentNode = nodeNum;
 if d == 0
     value = 0;
     return
 end
-a = randsample([1 2 3 4 ],1);
+a = randsample([1 2 3 4],1);
+suss = successors(nodeTree, nodeNum);
+child = suss(find(cell2mat(nodeTree.Nodes(suss,:).actionObs) == a));
+if isempty(child)
+    nodeTmp = table(0,0,a,0,'VariableNames', { 'M' 'N', 'actionObs', 'Q'});
+    nodeTree = addnode(nodeTree, nodeTmp);
+    currentNode = max(size(nodeTree.Nodes));
+    nodeTree = addedge(nodeTree, nodeNum,currentNode);
+else
+    currentNode = child;
+end
 
 if length(C) <= k_0*N(ha)^alpha_0 %Probably need workshoping
-
-        [observation, reward, newState] = forwardSimulate(state,a);
-        
+    
+    [observation, reward, newState] = forwardSimulate(state,a);
+    C{length(C)+1} = observation;
+    
+    
+    
     
 end
 
