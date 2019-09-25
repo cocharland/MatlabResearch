@@ -1,4 +1,4 @@
-function [observation,reward, newState] = forwardSimulate(state, action)
+function [observation,reward,newState] = forwardSimulate(state, action)
 newState = state;
 x = state.robotPose(1);
 y = state.robotPose(2);
