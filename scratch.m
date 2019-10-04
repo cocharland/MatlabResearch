@@ -18,9 +18,9 @@ figure
 suss = successors(H, 2);
 suss(find(cell2mat(H.Nodes(suss,:).actionObs) == 5));
 max(size(H.Nodes));
+H.Nodes
 
-% nodeInfo = table2array(H.Nodes(1,2))
-% 
+
 % [V,I] = max(table2array(nodeInfo(:,2)))
 % 
 % suss(I)
