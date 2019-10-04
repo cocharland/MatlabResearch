@@ -37,6 +37,7 @@ observation = generateObservation(newState);
 
 %Reward Mapping:
 visionReward = sum(newState.seenCells(find(observation >= 0))); 
+newState.seenCells(find(observation >= 0)) = 0;
 if state.physicalMap(y,x) > 0.3
     impactReward = -100;
 else
