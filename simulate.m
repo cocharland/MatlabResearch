@@ -41,10 +41,21 @@ if length(observationChildren) <= k_0*N_ha^alpha_0 %Probably need workshoping
         nodeTree = addnode(nodeTree,nodeTmp);
         newNodeID = max(size(nodeTree.Nodes(:,1)));
         nodeTree = addedge(nodeTree, currentNode, newNodeID);
+        currentNode = newNodeID; %move down the tree
+        %add state to the tree....
+        nodeTmp = table(0,0,{newState},0,'VariableNames', { 'M' 'N', 'actionObs', 'Q'});
+        nodeTree = addnode(nodeTree,nodeTmp);
+        newNodeID = max(size(nodeTree.Nodes(:,1)));
+        nodeTree = addedge(nodeTree, currentNode, newNodeID);
+    else
+        currentNode = successors(currentNode); %move to state node
+        
     end
     %Increment M
     nodeTree.Nodes{currentNode,1} = nodeTree.Nodes{currentNode,1}+1; 
-    %Add s to state tree
+    if nodeTree.Nodes{currentNode,1} == 1
+       total = reward + gamma*rollout(newState,nodeTree, d-1); 
+    end
     
     %Rollout/recursion
     

@@ -10,16 +10,20 @@ switch action
         dist = 1;
     case 2
         theta = theta -1;
+
     case 3
         theta = theta + 1;
+
     case 4
         dist = 2;
 end
 if theta > 4
     theta = 1;
+    
 elseif theta < 1
     theta = 4;
 end
+
 switch theta
     case 1
         u_t_tmp = [0 dist 0];
@@ -30,10 +34,13 @@ switch theta
     case 4
         u_t_tmp = [-dist 0 0];
 end
-newState.robotPose = state.robotPose + u_t_tmp;
 
-%TODO Progrssive Widen Observation Space::
+newState.robotPose = state.robotPose + u_t_tmp;
+newState.robotPose(3) =  theta;
+
 observation = generateObservation(newState);
+newState = particle_filter(newState,u_t_tmp,observation);
+
 
 %Reward Mapping:
 visionReward = sum(newState.seenCells(find(observation >= 0))); 
