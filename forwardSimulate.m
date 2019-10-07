@@ -45,7 +45,9 @@ newState = particle_filter(newState,u_t_tmp,observation);
 %Reward Mapping:
 visionReward = sum(newState.seenCells(find(observation >= 0))); 
 newState.seenCells(find(observation >= 0)) = 0;
-if state.physicalMap(y,x) > 0.3
+x = newState.robotPose(1);
+y = newState.robotPose(2);
+if state.physicalMap(y,x) > 0.5
     impactReward = -100;
 else
     impactReward = 0;

@@ -4,7 +4,7 @@ function [chi_t] = particle_filter(chi_t_minus_1, u_t, z_t)
     % state rolled together!
     %Z_t is observation which should be a simple grid based around
     %robotpose + u_t
-    numParticles = 50;
+    numParticles = 500;
     localMapset = zeros(100,100,numParticles);
     chi_t_bar = [];
     chi_t = chi_t_minus_1;
@@ -14,7 +14,7 @@ function [chi_t] = particle_filter(chi_t_minus_1, u_t, z_t)
 currentParticle = chi_t_minus_1;
 %Assuming A deterministic Update of robot pose
 currentParticle.robotPose =  currentParticle.robotPose + u_t;
-    parfor j = 1:numParticles%length(chi_t_minus_1)
+    for j = 1:numParticles%length(chi_t_minus_1)
         %Sample for next time step
 
         localMap = SampleFromMap(currentParticle);
