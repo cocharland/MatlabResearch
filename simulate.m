@@ -5,7 +5,7 @@ function [total,tree] = simulate(state,d,nodeTree, nodeNum)
 % C = list of node children
 % B = The list of states associated with a node
 k_0 = 5;
-alpha_0 = 1/100;
+alpha_0 = 1/5;
 gamma = 0.95;
 
 
@@ -30,7 +30,7 @@ if length(observationChildren) <= k_0*N_ha^alpha_0 %Probably need workshoping
         testMat = observation == candidateObs;
         if sum(testMat,'all') == numel(observation)
            %Then obs are the same
-           fprintf('obs same\n')
+
            %What to do here?
            matched = true;
            currentNode = observationChildren(j);
@@ -67,17 +67,17 @@ if length(observationChildren) <= k_0*N_ha^alpha_0 %Probably need workshoping
     if nodeTree.Nodes{mNode,1} == 1 %first time here, at bottom of tree...
        [total,nodeTree] = rollout(newState,nodeTree, d-1,currentNode);
        total = reward + gamma*total; 
-       fprintf('rout\n')
+
     else %keep traversing the tree
         [total,nodeTree] = simulate(newState ,d-1,nodeTree,currentNode);
         total = reward + gamma*total;
-        fprintf('forward\n')
+
     end
 else
     
     %Grab a observation already there
     M_values = nodeTree.Nodes{observationChildren,1};
-    M_weights = M_values./sum(M_values)
+    M_weights = M_values./sum(M_values);
     newNodeID = randsample(observationChildren,1,true,M_weights);
     currentNode = newNodeID;
     %grab State

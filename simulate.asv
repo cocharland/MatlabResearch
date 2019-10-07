@@ -30,11 +30,12 @@ if length(observationChildren) <= k_0*N_ha^alpha_0 %Probably need workshoping
         testMat = observation == candidateObs;
         if sum(testMat,'all') == numel(observation)
            %Then obs are the same
-           fprintf('obs same')
+
            %What to do here?
            matched = true;
            currentNode = observationChildren(j);
            nodeTree.Nodes{currentNode,2} = nodeTree.Nodes{currentNode,2}+1; 
+           break;
         end
         
     end
@@ -45,9 +46,10 @@ if length(observationChildren) <= k_0*N_ha^alpha_0 %Probably need workshoping
         newNodeID = max(size(nodeTree.Nodes(:,1)));
         nodeTree = addedge(nodeTree, currentNode, newNodeID);
         %Increment M
+        currentNode = newNodeID; %move down the tree
         nodeTree.Nodes{currentNode,1} = nodeTree.Nodes{currentNode,1}+1;
         mNode = currentNode;
-        currentNode = newNodeID; %move down the tree
+
         %add state to the tree....
         nodeTmp = table(0,0,{newState},0,'VariableNames', { 'M' 'N', 'actionObs', 'Q'});
         nodeTree = addnode(nodeTree,nodeTmp);
@@ -65,10 +67,11 @@ if length(observationChildren) <= k_0*N_ha^alpha_0 %Probably need workshoping
     if nodeTree.Nodes{mNode,1} == 1 %first time here, at bottom of tree...
        [total,nodeTree] = rollout(newState,nodeTree, d-1,currentNode);
        total = reward + gamma*total; 
-       fprintf('rout\n')
+
     else %keep traversing the tree
         [total,nodeTree] = simulate(newState ,d-1,nodeTree,currentNode);
         total = reward + gamma*total;
+
     end
 else
     
@@ -80,7 +83,7 @@ else
     %grab State
     stateNode = successors(nodeTree,currentNode);
     [~,r,~] = forwardSimulate(state,a);
-    state = nodeTree.Nodes(stateNode,3);
+    state = table2array(nodeTree.Nodes(stateNode,3));
     [total,nodeTree] = simulate(state{1},d-1,nodeTree,stateNode);
     
     total = r + gamma*total;
@@ -89,7 +92,7 @@ else
 end
 %Compute Q
 currentQ = table2array(nodeTree.Nodes(actionNode,4));
-tmpQ = currentQ + (total-currentQ)/N_ha;
+tmpQ = currentQ + (total-currentQ)/(N_ha+1);
 nodeTree.Nodes(actionNode,4) = table(tmpQ);
 tree = nodeTree;
 
