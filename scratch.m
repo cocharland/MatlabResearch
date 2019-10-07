@@ -21,12 +21,15 @@ G.Nodes.N = 1;
 G.Nodes.actionObs = {particleFiltObj};
 G.Nodes.Q = 0;
 
-[total,tree] = rollout(particleFiltObj,G,10,1);
-
-cell_ = table2array(tree.Nodes(end,3));
-hold on
-image(cell_{1}.physicalMap,'CDataMapping','scaled')
-hold on
-plot(cell_{1}.robotPose(1),cell_{1}.robotPose(2),'r*')
-figure
-plot(tree)
+% [total,tree] = rollout(particleFiltObj,G,10,1);
+% [total,tree] = rollout(particleFiltObj,tree,10,1);
+% 
+% cell_ = table2array(tree.Nodes(end,3));
+% hold on
+% image(cell_{1}.physicalMap,'CDataMapping','scaled')
+% hold on
+% plot(cell_{1}.robotPose(1),cell_{1}.robotPose(2),'r*')
+% figure
+% plot(tree)
+% observationChildren = successors(tree,1);
+% tree.Nodes{observationChildren,1}
