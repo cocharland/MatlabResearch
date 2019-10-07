@@ -10,7 +10,7 @@ proposedAction = randsample([1 2 3 4],1);%,true,[.40 .15 .15 .30]);
 suss = successors(nodeTree, nodeNum);
 child = suss(find(cell2mat(nodeTree.Nodes(suss,:).actionObs) == proposedAction));
 if isempty(child)
-    nodeTmp = table(0,1,proposedAction,0,'VariableNames', { 'M' 'N', 'actionObs', 'Q'});
+    nodeTmp = table(0,1,{proposedAction},0,'VariableNames', { 'M' 'N', 'actionObs', 'Q'});
     nodeTree = addnode(nodeTree, nodeTmp);
     newNodeID = max(size(nodeTree.Nodes(:,1)));
     nodeTree = addedge(nodeTree, nodeNum, newNodeID);
@@ -34,6 +34,7 @@ else
     [~,index] = max(tmp);
     selectedNode = suss(index);
     a = table2array(nodeTree.Nodes(selectedNode,3));
+    a = a{1};
     currentNode = selectedNode;
     nodeTree.Nodes{currentNode,2} = nodeTree.Nodes{currentNode,2}+1; %Increment N(ha)
     

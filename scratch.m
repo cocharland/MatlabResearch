@@ -20,7 +20,7 @@ G.Nodes.N = 1;
 
 G.Nodes.actionObs = {particleFiltObj};
 G.Nodes.Q = 0;
-
+tree = G;
 % [total,tree] = rollout(particleFiltObj,G,10,1);
 % [total,tree] = rollout(particleFiltObj,tree,10,1);
 % 
@@ -33,3 +33,11 @@ G.Nodes.Q = 0;
 % plot(tree)
 % observationChildren = successors(tree,1);
 % tree.Nodes{observationChildren,1}
+for t = 1:50
+    
+    for j = 1:100
+        [total, tree]=simulate(particleFiltObj,3,tree,1);
+    end
+    
+end
+plot(tree)
