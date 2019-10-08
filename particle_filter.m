@@ -4,7 +4,7 @@ function [chi_t] = particle_filter(chi_t_minus_1, u_t, z_t)
     % state rolled together!
     %Z_t is observation which should be a simple grid based around
     %robotpose + u_t
-    numParticles = 700;
+    numParticles = 300;
     localMapset = zeros(100,100,numParticles);
     chi_t_bar = [];
     chi_t = chi_t_minus_1;
@@ -14,12 +14,17 @@ function [chi_t] = particle_filter(chi_t_minus_1, u_t, z_t)
 currentParticle = chi_t_minus_1;
 %Assuming A deterministic Update of robot pose
 currentParticle.robotPose =  currentParticle.robotPose + u_t;
+tmpOdds = repmat(1-(1./(1+exp(currentParticle.physicalMap))),[1, 1,numParticles]);
+
+localMapSet = binornd(1,tmpOdds);
+
     for j = 1:numParticles%length(chi_t_minus_1)
         %Sample for next time step
-
-        localMap = SampleFromMap(currentParticle);
-        localMapSet(:,:,j) = localMap;
+% 
+%         localMap = SampleFromMap(currentParticle);
+%         localMapSet(:,:,j) = localMap;
         %Observation step:
+        localMap = localMapSet(:,:,j);
         weight(j) = importanceFactor(z_t, localMap,currentParticle);
     end
     total = sum(weight);

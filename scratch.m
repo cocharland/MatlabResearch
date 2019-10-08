@@ -24,7 +24,7 @@ tree = G;
 state = particleFiltObj;
 stateHist = [10 10 0];
 
-for t = 1:1
+for t = 1:1200
     tree = G;
     for j = 1:200
         [total, tree] = simulate(state,2,tree,1);
