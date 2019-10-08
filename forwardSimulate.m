@@ -15,7 +15,7 @@ switch action
         theta = theta + 1;
 
     case 4
-        dist = 2;
+        dist = 1;
 end
 if theta > 4
     theta = 1;
@@ -47,7 +47,7 @@ visionReward = sum(newState.seenCells(find(observation >= 0)));
 newState.seenCells(find(observation >= 0)) = 0;
 x = newState.robotPose(1);
 y = newState.robotPose(2);
-if state.physicalMap(y,x) > 0.5
+if state.physicalMap(y,x) > 0.3
     impactReward = -100;
 else
     impactReward = 0;

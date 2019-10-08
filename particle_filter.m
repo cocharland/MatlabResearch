@@ -4,7 +4,7 @@ function [chi_t] = particle_filter(chi_t_minus_1, u_t, z_t)
     % state rolled together!
     %Z_t is observation which should be a simple grid based around
     %robotpose + u_t
-    numParticles = 500;
+    numParticles = 700;
     localMapset = zeros(100,100,numParticles);
     chi_t_bar = [];
     chi_t = chi_t_minus_1;

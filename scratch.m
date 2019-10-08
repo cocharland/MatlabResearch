@@ -24,13 +24,13 @@ tree = G;
 state = particleFiltObj;
 stateHist = [10 10 0];
 
-for t = 1:15
-    
+for t = 1:1
+    tree = G;
     for j = 1:200
         [total, tree] = simulate(state,2,tree,1);
     end
     succs = successors(tree,1);
-    Q_val = table2array(tree.Nodes(succs,4));
+    Q_val = table2array(tree.Nodes(succs,4))
     [val,ind] = max(Q_val);
     node = succs(ind);
     action = table2array(tree.Nodes(node,3));
@@ -48,7 +48,7 @@ for t = 1:15
             theta = theta + 1;
             
         case 4
-            dist = 2;
+            dist = 1;
     end
     if theta > 4
         theta = 1;
