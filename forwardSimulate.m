@@ -5,9 +5,11 @@ y = state.robotPose(2);
 theta = state.robotPose(3);
 u_t_tmp = [ 0 0 0];
 dist = 0;
+actionReward = -10; 
 switch action
     case 1
         dist = 1;
+        actionReward = 0;
     case 2
         theta = theta -1;
 
@@ -16,6 +18,8 @@ switch action
 
     case 4
         dist = 1;
+        actionReward = 0;
+        
 end
 if theta > 4
     theta = 1;
@@ -47,12 +51,12 @@ visionReward = sum(newState.seenCells(find(observation >= 0)));
 newState.seenCells(find(observation >= 0)) = 0;
 x = newState.robotPose(1);
 y = newState.robotPose(2);
-if state.physicalMap(y,x) > 0.3
+if state.physicalMap(y,x) > 0.1
     impactReward = -100;
 else
     impactReward = 0;
 end
-reward = visionReward+impactReward;
+reward = visionReward+impactReward+actionReward;
 
 
 
