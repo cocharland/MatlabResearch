@@ -11,7 +11,7 @@ particleFiltObj.robotPose = robotPose;
 particleFiltObj.width = 100;
 particleFiltObj.height = 100;
 particleFiltObj.groundTruth = mapObj.groundTruth;
-particleFiltObj.physicalMap = mapObj.physicalMap-.3;
+particleFiltObj.physicalMap = mapObj.physicalMap;
 particleFiltObj.seenCells = ones(100,100);
 particleFiltObj.houghDataMask = zeros(100,100);
 G = digraph(false);
@@ -24,10 +24,10 @@ tree = G;
 state = particleFiltObj;
 stateHist = [10 10 0];
 
-for t = 1:1200
+for t = 1:4000
     tree = G;
-    for j = 1:200
-        [total, tree] = simulate(state,2,tree,1);
+    for j = 1:250
+        [total, tree] = simulate(state,5,tree,1);
     end
     succs = successors(tree,1);
     Q_val = table2array(tree.Nodes(succs,4))
@@ -74,11 +74,11 @@ for t = 1:1200
     
     stateHist = [stateHist; newState.robotPose]; 
     state = newState;
-    t
+
 end
 
 image(state.physicalMap,'CDataMapping','scaled')
 hold on
-plot(state.robotPose(:,1),state.robotPose(:,2))
+plot(stateHist(:,1),stateHist(:,2),'r*')
 figure
 plot(tree)

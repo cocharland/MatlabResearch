@@ -14,24 +14,24 @@ function [chi_t] = particle_filter(chi_t_minus_1, u_t, z_t)
 currentParticle = chi_t_minus_1;
 %Assuming A deterministic Update of robot pose
 currentParticle.robotPose =  currentParticle.robotPose + u_t;
-tmpOdds = 1-(1./(1+exp(currentParticle.physicalMap)));
+tmpOdds = repmat(1-(1./(1+exp(currentParticle.physicalMap))),[1, 1,numParticles]);
+
+localMapSet = binornd(1,tmpOdds);
+
+    for j = 1:numParticles%length(chi_t_minus_1)
+        %Sample for next time step
 % 
-% localMapSet = binornd(1,tmpOdds);
-% 
-%     for j = 1:numParticles%length(chi_t_minus_1)
-%         %Sample for next time step
-% % 
-% %         localMap = SampleFromMap(currentParticle);
-% %         localMapSet(:,:,j) = localMap;
-%         %Observation step:
-%         localMap = localMapSet(:,:,j);
-%         weight(j) = importanceFactor(z_t, localMap,currentParticle);
-%     end
-%     total = sum(weight);
-%     weight = weight./total;
-%     newParticles = randsample(numParticles,numParticles,true,weight);
-%     tmpMap = currentParticle.physicalMap;
- tmpMap = tmpOdds;
+%         localMap = SampleFromMap(currentParticle);
+%         localMapSet(:,:,j) = localMap;
+        %Observation step:
+        localMap = localMapSet(:,:,j);
+        weight(j) = importanceFactor(z_t, localMap,currentParticle);
+    end
+    total = sum(weight);
+    weight = weight./total;
+    newParticles = randsample(numParticles,numParticles,true,weight);
+    tmpMap = currentParticle.physicalMap;
+    %tmpMap = zeros(currentParticle.height,currentParticle.width);
     %below collapses the particles back to probabilities. 
 %     for j = 1:currentParticle.height
 %         for k = 1:currentParticle.width
@@ -58,19 +58,7 @@ tmpOdds = 1-(1./(1+exp(currentParticle.physicalMap)));
         if (row <= 0 || row > currentParticle.height || col <= 0 || col > currentParticle.width)
             continue;
         end
-        if z_t(row,col) == 0
-            tmpMap(row,col) =  tmpMap(row,col)-.15;
-        elseif z_t(row,col) == 1
-            tmpMap(row,col) =  tmpMap(row,col)+.15;
-        else
-            continue;
-        end
-        if tmpMap(row,col) > 1
-            tmpMap(row,col) = 1;
-        elseif tmpMap(row,col) < 0
-            tmpMap(row,col) = 0;
-        end
-
+        tmpMap(row,col) = sum(localMapSet(row,col,newParticles))/numParticles;
         chi_t.physicalMap(row,col) = log(tmpMap(row,col)/(1-tmpMap(row,col)));
     end
 
