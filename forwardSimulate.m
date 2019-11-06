@@ -51,7 +51,7 @@ visionReward = sum(newState.seenCells(find(observation >= 0)));
 newState.seenCells(find(observation >= 0)) = 0;
 x = newState.robotPose(1);
 y = newState.robotPose(2);
-if x < 1 || y < 1
+if x < 1 || y < 1 || x > 100 || y > 100
     reward = -1000;
     return;
 end
