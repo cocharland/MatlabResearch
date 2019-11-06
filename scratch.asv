@@ -1,5 +1,5 @@
 close all
-clear all;
+
 mapObj = buildOccupancyMap(10,10,0.1);
 particleFiltObj = MCParticle;
 
@@ -14,27 +14,26 @@ particleFiltObj.groundTruth = mapObj.groundTruth;
 particleFiltObj.physicalMap = mapObj.physicalMap;
 particleFiltObj.seenCells = ones(100,100);
 particleFiltObj.houghDataMask = zeros(100,100);
-numNodes = 13000;
+numNodes = 800;
 M = zeros(numNodes,1);
 N = ones(numNodes,1);
 Q = M;
 actionObs = cell(numNodes,1);
 edges = false(numNodes,numNodes);
 free = true(numNodes,1);
-free(1) = false;
 nodes = table(M,N,actionObs,Q,free,'VariableNames', { 'M', 'N', 'actionObs', 'Q','free'});
-G = digraph(edges,nodes);
+G = digraph(edges,nodes)
 
 
 tree = G;
 state = particleFiltObj;
 stateHist = [10 10 0];
-
-for t = 1:10
+%INIT nodes M to -1....
+for t = 1
     t
     tree = G;
-    for j = 1:250
-        [total, tree] = simulate(state,5,tree,1);
+    for j = 1:800
+        [total, tree] = simulate(state,10,tree,1);
     end
     succs = successors(tree,1);
     Q_val = table2array(tree.Nodes(succs,4))
@@ -76,8 +75,8 @@ for t = 1:10
             u_t_tmp = [-dist 0 0];
     end
     newState = state;
-    %newState.robotPose = state.robotPose + u_t_tmp;
-    %newState.robotPose(3) =  theta;
+    newState.robotPose = state.robotPose + u_t_tmp;
+    newState.robotPose(3) =  theta;
     newState = particle_filter(newState,u_t_tmp,obs);
     
     stateHist = [stateHist; newState.robotPose]; 

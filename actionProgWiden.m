@@ -6,13 +6,23 @@ c = 80;
 %--------------------------------------------------------------------------
 
 newNode = false;
-proposedAction = randsample([1 2 3 4],1);%,true,[.40 .15 .15 .30]);
+proposedAction = randsample([1 2 3],1);%,true,[.40 .15 .15 .30]);
 suss = successors(nodeTree, nodeNum);
 child = suss(find(cell2mat(nodeTree.Nodes(suss,:).actionObs) == proposedAction));
 if isempty(child)
-    nodeTmp = table(0,1,{proposedAction},0,'VariableNames', { 'M' 'N', 'actionObs', 'Q'});
-    nodeTree = addnode(nodeTree, nodeTmp);
-    newNodeID = max(size(nodeTree.Nodes(:,1)));
+    nodeTmp = table(0,1,{proposedAction},0,false,'VariableNames', { 'M', 'N', 'actionObs', 'Q','free'});
+    k = find(nodeTree.Nodes.free,1,'first');
+    if isempty(k)
+        nodeTree =  addnode(nodeTree,1);
+        nodeToChange = max(size(nodeTree.Nodes(:,1)));
+    else
+        nodeToChange = k;
+    end
+    
+    nodeTree.Nodes(nodeToChange,:) = nodeTmp;
+    newNodeID = nodeToChange;%
+    %nodeTree = addnode(nodeTree, nodeTmp);
+    %newNodeID = max(size(nodeTree.Nodes(:,1)));
     nodeTree = addedge(nodeTree, nodeNum, newNodeID);
     newNode = true;
 end

@@ -5,7 +5,7 @@ y = state.robotPose(2);
 theta = state.robotPose(3);
 u_t_tmp = [ 0 0 0];
 dist = 0;
-actionReward = -10; 
+actionReward = -1; 
 switch action
     case 1
         dist = 1;
@@ -52,8 +52,8 @@ newState.seenCells(find(observation >= 0)) = 0;
 x = newState.robotPose(1);
 y = newState.robotPose(2);
 if x < 1 || y < 1
-    x
-    y
+    reward = -1000;
+    return;
 end
 if state.physicalMap(y,x) > 0.1
     impactReward = -100;

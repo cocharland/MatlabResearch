@@ -60,18 +60,9 @@ if length(observationChildren) <= k_0*N_ha^alpha_0 %Probably need workshoping
         mNode = currentNode;
 
         %add state to the tree....
-         k = find(nodeTree.Nodes.free,1,'first');
-        if isempty(k)
-           nodeTree =  addnode(nodeTree,1);
-           nodeToChange = max(size(nodeTree.Nodes(:,1)));
-        else
-            nodeToChange = k;
-        end
         nodeTmp = table(0,0,{newState},0,false,'VariableNames', { 'M', 'N', 'actionObs', 'Q', 'free'});
-        nodeTree.Nodes(nodeToChange,:) = nodeTmp;
-        newNodeID = nodeToChange;%
-        %nodeTree = addnode(nodeTree,nodeTmp);
-        %newNodeID = max(size(nodeTree.Nodes(:,1)));
+        nodeTree = addnode(nodeTree,nodeTmp);
+        newNodeID = max(size(nodeTree.Nodes(:,1)));
         nodeTree = addedge(nodeTree, currentNode, newNodeID);
         currentNode = newNodeID; %move pointer to state node
     else
