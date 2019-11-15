@@ -59,9 +59,9 @@ tmpOdds = 1-(1./(1+exp(currentParticle.physicalMap)));
             continue;
         end
         if z_t(row,col) == 0
-            tmpMap(row,col) =  tmpMap(row,col)-.15;
+            tmpMap(row,col) =  tmpMap(row,col)-.2;
         elseif z_t(row,col) == 1
-            tmpMap(row,col) =  tmpMap(row,col)+.15;
+            tmpMap(row,col) =  tmpMap(row,col)+.2;
         else
             continue;
         end
