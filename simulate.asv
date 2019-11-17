@@ -1,11 +1,11 @@
-function [total,tree] = simulate(state,d,nodeTree, nodeNum,k_0,alpha_0)
+function [total,tree] = simulate(state,d,nodeTree, nodeNum)
 
 %State must be a MCParticle object....
 
 % C = list of node children
 % B = The list of states associated with a node
-%k_0 = 15;
-%alpha_0 = 1/6;
+k_0 = ;
+alpha_0 = 1/5;
 gamma = 0.95;
 
 
@@ -18,7 +18,7 @@ end
 actionNode = currentNode;
 observationChildren = successors(nodeTree, currentNode);
 N_ha = nodeTree.Nodes{currentNode,2}-1;
-if length(observationChildren) <= k_0*N_ha^alpha_0 %Probably need workshoping
+if(1)% length(observationChildren) <= k_0*N_ha^alpha_0 %Probably need workshoping
     [observation, reward, newState] = forwardSimulate(state,a);
 
     %Need to see if observation is unique or not
@@ -87,7 +87,7 @@ if length(observationChildren) <= k_0*N_ha^alpha_0 %Probably need workshoping
        total = reward + gamma*total; 
 
     else %keep traversing the tree
-        [total,nodeTree] = simulate(newState ,d-1,nodeTree,currentNode,k_0,alpha_0);
+        [total,nodeTree] = simulate(newState ,d-1,nodeTree,currentNode);
         total = reward + gamma*total;
 
     end
@@ -102,7 +102,7 @@ else
     stateNode = successors(nodeTree,currentNode);
     [~,r,~] = forwardSimulate(state,a);
     state = table2array(nodeTree.Nodes(stateNode,3));
-    [total,nodeTree] = simulate(state{1},d-1,nodeTree,stateNode,k_0,alpha_0);
+    [total,nodeTree] = simulate(state{1},d-1,nodeTree,stateNode);
     
     total = r + gamma*total;
     %compute reward
