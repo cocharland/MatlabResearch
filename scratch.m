@@ -1,6 +1,6 @@
 close all
 clear all;
-params = [5 10 15 20 25 5 10 15 20 25; 1/6 1/6 1/6 1/6 1/6 1/3 1/3 1/3 1/3 1/3];
+params = [3 4 5 6 7 3 4 5 6 7; 1/6 1/6 1/6 1/6 1/6 1/8 1/8 1/8 1/8 1/8];
 particleDeaths = zeros(length(params),2);
 parfor m = 1:length(params)
 mapObj = buildOccupancyMap(10,10,0.1);
