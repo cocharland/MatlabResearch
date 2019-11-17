@@ -14,7 +14,7 @@ particleFiltObj.groundTruth = mapObj.groundTruth;
 particleFiltObj.physicalMap = mapObj.physicalMap-.15;
 particleFiltObj.seenCells = ones(100,100);
 particleFiltObj.houghDataMask = zeros(100,100);
-numNodes = 150;
+numNodes = 5000;
 M = zeros(numNodes,1);
 N = ones(numNodes,1);
 Q = M;
@@ -37,11 +37,12 @@ for t = 1:500
     for j = 1:50
         [total, tree] = simulate(state,20,tree,rootNode);
     end
-    succs = successors(tree,1);
+    succs = successors(tree,rootNode);
     Q_val = table2array(tree.Nodes(succs,4));
     [val,ind] = max(Q_val);
     node = succs(ind);
     rootNode = node;
+    tree.Nodes(node,:)
     action = table2array(tree.Nodes(node,3));
     action = action{1};
     [obs,~,state] = forwardSimulate(state,action);
@@ -106,12 +107,12 @@ for t = 1:500
         tree = rmedge(tree,oldRoot,rootNode);
         nodesTokeep = conncomp(tree,'Type','weak');
         binThatMatters = nodesTokeep(rootNode);
-        numnodes(tree)
         subTree = subgraph(tree,nodesTokeep==binThatMatters);
         numnodes(subTree)
         rootNode = 1;
         while ~isempty(predecessors(subTree,rootNode))
             rootNode = predecessors(subTree,rootNode);
+            tree.Nodes(rootNode,:)
         end
         rootNode = successors(subTree,rootNode);
         numNodes2 = numNodes - numnodes(subTree);
@@ -124,9 +125,11 @@ for t = 1:500
         nodes = table(M,N,actionObs,Q,free,'VariableNames', { 'M', 'N', 'actionObs', 'Q','free'});
         tree = addnode(subTree,nodes);
         fprintf('matched')
+        tree.Nodes(rootNode,:)
     else
         tree = G;
         rootNode = 1;
+        numnodes(tree);
     end
     
 end
@@ -136,3 +139,4 @@ hold on
 plot(stateHist(:,1),stateHist(:,2),'r*')
 figure
 plot(tree)
+save run_end.mat
