@@ -4,7 +4,7 @@ function [total,tree] = simulate(state,d,nodeTree, nodeNum)
 
 % C = list of node children
 % B = The list of states associated with a node
-k_0 = 5;
+k_0 = 50;
 alpha_0 = 1/5;
 gamma = 0.95;
 
