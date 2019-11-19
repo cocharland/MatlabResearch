@@ -1,7 +1,10 @@
 close all
 clear all;
-params = [3 4 5 6 7 3 4 5 6 7; 1/6 1/6 1/6 1/6 1/6 1/8 1/8 1/8 1/8 1/8];
+params = [ 6 1000 6;  1/5 1 1/5];
 particleDeaths = zeros(length(params),2);
+drawLines_param = [0 0 1];
+stateHistory = [];
+stateRuns = [];
 parfor m = 1:length(params)
 mapObj = buildOccupancyMap(10,10,0.1);
 particleFiltObj = MCParticle;
@@ -35,9 +38,10 @@ tree = G;
 
     k_0 = params(1,m);
     alpha_0 = params(2,m);
+    drawLines = drawLines_param(m);
     nodesBefore_after = [];
-    for t = 1:50
-        t
+    for t = 1:500
+
         
         for j = 1:50
             [total, tree] = simulate(state,20,tree,rootNode,k_0,alpha_0);
@@ -47,7 +51,6 @@ tree = G;
         [val,ind] = max(Q_val);
         node = succs(ind);
         rootNode = node;
-        tree.Nodes(node,:)
         action = table2array(tree.Nodes(node,3));
         action = action{1};
         [obs,~,state] = forwardSimulate(state,action);
@@ -113,11 +116,10 @@ tree = G;
             nodesTokeep = conncomp(tree,'Type','weak');
             binThatMatters = nodesTokeep(rootNode);
             subTree = subgraph(tree,nodesTokeep==binThatMatters);
-            nodesBefore_after = [nodesBefore_after; sum(table2array(tree.Nodes(:,5))) numnodes(subTree)];
+            nodesBefore_after = [nodesBefore_after; sum(table2array(tree.Nodes(:,5))) numnodes(subTree)]
             rootNode = 1;
             while ~isempty(predecessors(subTree,rootNode))
                 rootNode = predecessors(subTree,rootNode);
-                tree.Nodes(rootNode,:)
             end
             rootNode = successors(subTree,rootNode);
             numNodes2 = numNodes - numnodes(subTree);
@@ -129,18 +131,57 @@ tree = G;
             free = true(numNodes2,1);
             nodes = table(M,N,actionObs,Q,free,'VariableNames', { 'M', 'N', 'actionObs', 'Q','free'});
             tree = addnode(subTree,nodes);
-            fprintf('matched')
+
         else
-            nodesBefore_after = [nodesBefore_after; sum(table2array(tree.Nodes(:,5))) 0];
+            nodesBefore_after = [nodesBefore_after; sum(table2array(tree.Nodes(:,5))) 0]
             tree = G;
             rootNode = 1;
             
             numnodes(tree);
             
         end
+        % Now hough transform
+        if mod(t,5) == 0 && drawLines
+            numlines = 10;
+            state.physicalMap = state.physicalMap - state.houghDataMask;
+            lines = buildLines(numlines,state);
+            state.houghDataMask = zeros(100,100)-.2;
+            for line = 1:length(lines) %Time to wieght the map for walls
+                %grab point+angle
+                current_point = lines(line).point1;
+                secondary_point = lines(line).point2;
+                lineTheta = lines(line).theta;
+                lineRho = lines(line).rho;
+                over = 0;
+                for range = -25:.5:25 %find intersections
+                    u = (current_point-secondary_point)/norm(current_point-secondary_point);
+                    xy = current_point+range.*u;
+                    %yy = (lineRho-xx*cosd(lineTheta))/sind(lineTheta);
+                    yy = xy(2);
+                    xx = xy(1);
+                    if yy > 100 || yy < 1 || xx > 100 || xx < 1
+                        continue;
+                    end
+                    
+                    state.houghDataMask(round(yy),round(xx)) =  state.houghDataMask(round(yy),round(xx))+0.25;
+                end
+                
+            end
+            state.physicalMap = state.physicalMap + state.houghDataMask;
+            image(state.physicalMap,'CDataMapping','scaled')
+            pause(0.1)
+        end
+
         
     end
+    figure(m)
+    image(state.physicalMap,'CDataMapping','scaled')
+    hold on
+    plot(stateHist(:,1),stateHist(:,2),'r*')
+    
     particleDeaths(m,:) =   mean(nodesBefore_after);
+    stateHistory{m} = stateHist;
+    stateRuns{m} = state;
 end
 
 % image(state.physicalMap,'CDataMapping','scaled')
