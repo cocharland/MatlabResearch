@@ -3,8 +3,10 @@ clear all;
 params = [ 6 1000 6;  1/5 1 1/5];
 particleDeaths = zeros(length(params),2);
 drawLines_param = [0 0 1];
-stateHistory = [];
-stateRuns = [];
+
+stateHistory = cell(1,length(params));
+stateRuns = cell(1,length(params));
+node_returns = cell(1,length(params));
 parfor m = 1:length(params)
 mapObj = buildOccupancyMap(10,10,0.1);
 particleFiltObj = MCParticle;
@@ -20,7 +22,7 @@ particleFiltObj.groundTruth = mapObj.groundTruth;
 particleFiltObj.physicalMap = mapObj.physicalMap-.15;
 particleFiltObj.seenCells = ones(100,100);
 particleFiltObj.houghDataMask = zeros(100,100);
-numNodes = 5000;
+numNodes = 8000;
 M = zeros(numNodes,1);
 N = ones(numNodes,1);
 Q = M;
@@ -39,12 +41,16 @@ tree = G;
     k_0 = params(1,m);
     alpha_0 = params(2,m);
     drawLines = drawLines_param(m);
+%     k_0 = 6;
+%     alpha0 = 1/5;
+%     drawLines = 1;
+    
     nodesBefore_after = [];
     for t = 1:500
-
         
-        for j = 1:50
-            [total, tree] = simulate(state,20,tree,rootNode,k_0,alpha_0);
+        
+        for j = 1:80
+            [total, tree] = simulate(state,40,tree,rootNode,k_0,alpha_0);
         end
         succs = successors(tree,rootNode);
         Q_val = table2array(tree.Nodes(succs,4));
@@ -66,7 +72,7 @@ tree = G;
                 theta = theta + 1;
                 
             case 4
-                dist = 1;
+                dist = 2;
         end
         if theta > 4
             theta = 1;
@@ -153,7 +159,7 @@ tree = G;
                 lineTheta = lines(line).theta;
                 lineRho = lines(line).rho;
                 over = 0;
-                for range = -25:.5:25 %find intersections
+                for range = -15:.5:15 %find intersections
                     u = (current_point-secondary_point)/norm(current_point-secondary_point);
                     xy = current_point+range.*u;
                     %yy = (lineRho-xx*cosd(lineTheta))/sind(lineTheta);
@@ -163,30 +169,32 @@ tree = G;
                         continue;
                     end
                     
-                    state.houghDataMask(round(yy),round(xx)) =  state.houghDataMask(round(yy),round(xx))+0.25;
+                    state.houghDataMask(round(yy),round(xx)) =  state.houghDataMask(round(yy),round(xx))+0.15;
                 end
                 
             end
             state.physicalMap = state.physicalMap + state.houghDataMask;
-            image(state.physicalMap,'CDataMapping','scaled')
-            pause(0.1)
+            %image(state.physicalMap,'CDataMapping','scaled')
+            %buildGif(lines,state,length(lines))
+            %pause(0.1)
         end
 
         
     end
-    figure(m)
-    image(state.physicalMap,'CDataMapping','scaled')
-    hold on
-    plot(stateHist(:,1),stateHist(:,2),'r*')
+%     figure(m)
+%     image(state.physicalMap,'CDataMapping','scaled')
+%     hold on
+%     plot(stateHist(:,1),stateHist(:,2),'r*')
     
     particleDeaths(m,:) =   mean(nodesBefore_after);
     stateHistory{m} = stateHist;
-    stateRuns{m} = state;
+   stateRuns{m} = state;
+   node_returns{m} = nodesBefore_after;
 end
-
+% 
 % image(state.physicalMap,'CDataMapping','scaled')
 % hold on
 % plot(stateHist(:,1),stateHist(:,2),'r*')
 % figure
 % plot(tree)
-save run_end.mat
+save run_end1.mat

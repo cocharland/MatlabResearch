@@ -5,7 +5,7 @@ function [obsMap] = generateObservation(particle)
     y = particle.robotPose(2);
     theta = particle.robotPose(3);
     
-    truePos = 0.95;
+    truePos = 0.975;
     trueNeg = 0.975;
     %Set observation direction
     if theta == 1

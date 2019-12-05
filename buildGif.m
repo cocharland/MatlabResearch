@@ -1,7 +1,7 @@
 function buildGif(lines,obj,n)
 close all
 h = figure(99);
-filename = 'drawingLines.gif';
+filename = 'drawingLinesNov.gif';
 axis tight manual
 image(obj.physicalMap,'Cdatamapping','scaled')
 a = gca;
