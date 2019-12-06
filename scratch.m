@@ -7,10 +7,10 @@ drawLines_param = [0 0 1];
 stateHistory = cell(1,length(params));
 stateRuns = cell(1,length(params));
 node_returns = cell(1,length(params));
-parfor m = 1:length(params)
+for m = 1:length(params)
 mapObj = buildOccupancyMap(10,10,0.1);
 particleFiltObj = MCParticle;
-
+m
 
 robotPose = [10 10 1];
 
@@ -47,7 +47,7 @@ tree = G;
     
     nodesBefore_after = [];
     for t = 1:500
-        
+        t/500
         
         for j = 1:80
             [total, tree] = simulate(state,40,tree,rootNode,k_0,alpha_0);
@@ -193,8 +193,8 @@ tree = G;
 end
 % 
 % image(state.physicalMap,'CDataMapping','scaled')
-% hold on
-% plot(stateHist(:,1),stateHist(:,2),'r*')
+hold on
+plot(stateHist(:,1),stateHist(:,2),'r*')
 % figure
 % plot(tree)
 save run_end1.mat
