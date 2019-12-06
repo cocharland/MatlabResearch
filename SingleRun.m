@@ -1,4 +1,4 @@
-close all
+
 clear all;
 params = [ 6 1000 6;  1/5 1 1/5];
 particleDeaths = zeros(length(params),2);
@@ -37,7 +37,7 @@ mapEntropy = [];
 %-------------------------------------------Params
 k_0 = 6;
 alpha_0 = 1/5;
-drawLines = 1;
+drawLines = 0;
 %------------------------------------------------
 nodesBefore_after = [];
 for t = 1:500
