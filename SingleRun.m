@@ -18,7 +18,7 @@ particleFiltObj.groundTruth = mapObj.groundTruth;
 particleFiltObj.physicalMap = mapObj.physicalMap-.15;
 particleFiltObj.seenCells = ones(100,100);
 particleFiltObj.houghDataMask = zeros(100,100);
-numNodes = 8000;
+numNodes = 80;
 M = zeros(numNodes,1);
 N = ones(numNodes,1);
 Q = M;
@@ -40,11 +40,11 @@ alpha_0 = 1/5;
 drawLines = 0;
 %------------------------------------------------
 nodesBefore_after = [];
-for t = 1:500
+for t = 1
     
     t/500
-    for j = 1:6
-        [total, tree] = simulate(state,40,tree,rootNode,k_0,alpha_0);
+    for j = 1:25
+        [total, tree] = simulate(state,50,tree,rootNode,k_0,alpha_0);
     end
     succs = successors(tree,rootNode);
     Q_val = table2array(tree.Nodes(succs,4));
@@ -134,7 +134,7 @@ for t = 1:500
         
     else
         nodesBefore_after = [nodesBefore_after; sum(table2array(tree.Nodes(:,5))) 0];
-        tree = G;
+        %tree = G;
         rootNode = 1;
         
         numnodes(tree);
@@ -174,12 +174,23 @@ for t = 1:500
     end
     tmp = 1-(1./(1+exp(state.physicalMap)));
     tmp(tmp == 0) = 0.0001;
-    mapEntropy(t) =  -1*sum(tmp.*log(tmp),'all')
+    mapEntropy(t) =  -1*sum(tmp.*log(tmp),'all');
 
     
 end
 figure
 image(state.physicalMap,'CDataMapping','scaled')
+hold on
+for j = 1:numnodes(tree)
+    nodeClass = class(tree.Nodes{:,3}{j});
+    if strcmp('MCParticle',nodeClass)
+       poses = tree.Nodes{j,3}{1}.robotPose;
+       plot(poses(1),poses(2),'r.')
+       hold on
+    end
+end
+
+
 hold on
 plot(stateHist(:,1),stateHist(:,2),'r*')
 %

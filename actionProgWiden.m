@@ -2,7 +2,7 @@ function [a,currentNode,nodeTree] = actionProgWiden(nodeTree,nodeNum)
 %Controls the progressive widening of the tree
 
 %c -tree explotation param
-c = 80;
+c = 5;
 %--------------------------------------------------------------------------
 
 newNode = false;
