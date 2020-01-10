@@ -18,7 +18,7 @@ particleFiltObj.groundTruth = mapObj.groundTruth;
 particleFiltObj.physicalMap = mapObj.physicalMap-.15;
 particleFiltObj.seenCells = ones(100,100);
 particleFiltObj.houghDataMask = zeros(100,100);
-numNodes = 80;
+numNodes = 15000;
 M = zeros(numNodes,1);
 N = ones(numNodes,1);
 Q = M;
@@ -40,11 +40,11 @@ alpha_0 = 1/5;
 drawLines = 0;
 %------------------------------------------------
 nodesBefore_after = [];
-for t = 1
+for t = 1:5
     
     t/500
     for j = 1:25
-        [total, tree] = simulate(state,50,tree,rootNode,k_0,alpha_0);
+        [total, tree] = simulate(state,80,tree,rootNode,k_0,alpha_0);
     end
     succs = successors(tree,rootNode);
     Q_val = table2array(tree.Nodes(succs,4));

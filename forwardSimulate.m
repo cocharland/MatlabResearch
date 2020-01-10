@@ -17,7 +17,7 @@ switch action
         theta = theta + 1;
 
     case 4
-        dist = 1;
+        dist = 2;
         actionReward = 0;
         
 end
