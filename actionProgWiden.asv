@@ -9,10 +9,10 @@ newNode = false;
 proposedAction = randsample([1 2 3],1);%,true,[.40 .15 .15 .30]);
 suss = successors(nodeTree, nodeNum);
 try 
-    cell2mat(nodeTree.Nodes(suss,:).actionObs);
+    cell2mat(nodeTree.Nodes(suss,:).actionObs)
 catch ME
     nodeTree.Nodes(suss,:).actionObs
-    nodeNum
+    nodeNu
 end
     
 child = suss(find(cell2mat(nodeTree.Nodes(suss,:).actionObs) == proposedAction));

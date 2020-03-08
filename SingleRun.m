@@ -1,5 +1,5 @@
-
-clear all;
+function [totalReward] = SingleRun(~)
+%clear all;
 params = [ 6 1000 6;  1/5 1 1/5];
 particleDeaths = zeros(length(params),2);
 drawLines_param = [0 0 1];
@@ -37,14 +37,15 @@ mapEntropy = [];
 %-------------------------------------------Params
 k_0 = 6;
 alpha_0 = 1/5;
-drawLines = 0;
+drawLines = 1;
 %------------------------------------------------
 nodesBefore_after = [];
-for t = 1:5
+totalReward = [];
+for t = 1:50
     
-    t/500
+    t/50
     for j = 1:25
-        [total, tree] = simulate(state,80,tree,rootNode,k_0,alpha_0);
+        [total, tree] = simulate(state,20,tree,rootNode,k_0,alpha_0);
     end
     succs = successors(tree,rootNode);
     Q_val = table2array(tree.Nodes(succs,4));
@@ -53,7 +54,8 @@ for t = 1:5
     rootNode = node;
     action = table2array(tree.Nodes(node,3));
     action = action{1};
-    [obs,~,state] = forwardSimulate(state,action);
+    [obs,reward,state] = forwardSimulate(state,action);
+    totalReward(t) = reward;
     dist = 0;
     theta = state.robotPose(3);
     switch action
@@ -116,7 +118,7 @@ for t = 1:5
         nodesTokeep = conncomp(tree,'Type','weak');
         binThatMatters = nodesTokeep(rootNode);
         subTree = subgraph(tree,nodesTokeep==binThatMatters);
-        nodesBefore_after = [nodesBefore_after; sum(table2array(tree.Nodes(:,5))) numnodes(subTree)]
+        nodesBefore_after = [nodesBefore_after; sum(table2array(tree.Nodes(:,5))) numnodes(subTree)];
         rootNode = 1;
         while ~isempty(predecessors(subTree,rootNode))
             rootNode = predecessors(subTree,rootNode);
@@ -134,7 +136,7 @@ for t = 1:5
         
     else
         nodesBefore_after = [nodesBefore_after; sum(table2array(tree.Nodes(:,5))) 0];
-        %tree = G;
+        tree = G;
         rootNode = 1;
         
         numnodes(tree);
@@ -190,13 +192,13 @@ for j = 1:numnodes(tree)
     end
 end
 
-
-hold on
-plot(stateHist(:,1),stateHist(:,2),'r*')
+end
+%hold on
+%plot(stateHist(:,1),stateHist(:,2),'r*')
 %
 % image(state.physicalMap,'CDataMapping','scaled')
 % hold on
 % plot(stateHist(:,1),stateHist(:,2),'r*')
 % figure
 % plot(tree)
-save run_end1.mat
+%save run_end1.mat
