@@ -35,13 +35,13 @@ rootNode = 1;
 tree = G;
 mapEntropy = [];
 %-------------------------------------------Params
-k_0 = 6;
+k_0 = 600;
 alpha_0 = 1/5;
-drawLines = 1;
+drawLines = 0;
 %------------------------------------------------
 nodesBefore_after = [];
 totalReward = [];
-for t = 1:50
+for t = 1:100
     
     t/50
     for j = 1:25
