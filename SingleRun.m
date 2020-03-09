@@ -41,11 +41,10 @@ drawLines = 0;
 %------------------------------------------------
 nodesBefore_after = [];
 totalReward = [];
-for t = 1:100
-    
-    t/50
+for t = 1:250
+    %t/100
     for j = 1:25
-        [total, tree] = simulate(state,20,tree,rootNode,k_0,alpha_0);
+        [total, tree] = simulate(state,30,tree,rootNode,k_0,alpha_0);
     end
     succs = successors(tree,rootNode);
     Q_val = table2array(tree.Nodes(succs,4));
